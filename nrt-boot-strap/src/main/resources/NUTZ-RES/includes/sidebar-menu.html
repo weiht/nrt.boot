@@ -1,6 +1,11 @@
 <!--sidebar-menu-->
 <div id="sidebar">
   <ul>
+#widgets('sidebarmenu')
+ #foreach ($w in $widgets)
+  #parse($w)
+ #end
+#end
   </ul>
 </div>
 <!--sidebar-menu-->
