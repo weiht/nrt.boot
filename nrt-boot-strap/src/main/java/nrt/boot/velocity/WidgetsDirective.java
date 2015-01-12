@@ -62,6 +62,7 @@ extends Directive {
 					ResourceNotFoundException, IOException {
 		logger.trace("Widgets: {}", widgets);
 		Object oldWidgets = context.get(KEY_WIDGETS);
+		context.put(KEY_WIDGETS, widgets);
 		try {
 			SimpleNode block = (SimpleNode) node.jjtGetChild(node.jjtGetNumChildren() - 1);
 			block.render(context, writer);
@@ -103,7 +104,7 @@ extends Directive {
 
 	private void loadClasspathWidgets(Set<String> loaded, String key) {
 		logger.trace("Loading classpath widgets...");
-		String prefix = viewConfig.getResourceLocation() + "/" + PATH_PREFIX + (key == null || key.isEmpty() ? "" : ("/" + key));
+		String prefix = PATH_PREFIX + (key == null || key.isEmpty() ? "" : ("/" + key));
 		for (NutResource res: Scans.me().scan(prefix)) {
 			String n = res.getName();
 			logger.trace("Classpath widget: /{}/{}/{}", PATH_PREFIX, key, n);
