@@ -75,7 +75,7 @@ extends Directive {
 	}
 
 	private Set<String> widgetList(InternalContextAdapter context, String key) {
-		File[] repos = VelocityView.getRepos();
+		File[] repos = (File[]) context.get(VelocityView.KEY_REPO_DIRS);
 		logger.trace("Repos for resources: {}", (Object)repos);
 		if (repos == null || repos.length < 1) {
 			return classpathWidgetList(context, key);
@@ -86,7 +86,7 @@ extends Directive {
 
 	private Set<String> classpathWidgetList(InternalContextAdapter context,
 			String key) {
-		boolean devMode = VelocityView.isDevMode();
+		boolean devMode = viewConfig.isDevMode();
 		Set<String> loaded = null;
 		if (!devMode) {
 			loaded = widgetLists.get(key); 
@@ -113,7 +113,7 @@ extends Directive {
 
 	private Set<String> mixedWidgetList(InternalContextAdapter context,
 			String key, File[] repos) {
-		boolean devMode = VelocityView.isDevMode();
+		boolean devMode = viewConfig.isDevMode();
 		Set<String> loaded = null;
 		if (!devMode) {
 			loaded = widgetLists.get(key); 
