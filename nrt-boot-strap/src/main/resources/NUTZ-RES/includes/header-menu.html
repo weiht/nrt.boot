@@ -2,6 +2,12 @@
 <!--top-Header-menu-->
 <div id="user-nav" class="navbar navbar-inverse">
   <ul class="nav">
+#widgets('headmenu')
+ #foreach ($w in $widgets)
+ $w
+  #parse($w)
+ #end
+#end
   </ul>
 </div>
 <!--close-top-Header-menu-->
