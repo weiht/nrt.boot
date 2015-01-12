@@ -19,4 +19,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<modules>
+		<module>nrt-boot-static</module>
+	</modules>
 </project>
