@@ -10,6 +10,7 @@
 		<nutz.version>1.b.51</nutz.version>
 		<slf4j.version>1.7.9</slf4j.version>
 		<logback.version>1.1.2</logback.version>
+		<nrt-jetty.version>0.1.0-SNAPSHOT</nrt-jetty.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -21,5 +22,6 @@
 	</dependencies>
 	<modules>
 		<module>nrt-boot-static</module>
+		<module>nrt-boot-strap</module>
 	</modules>
 </project>
