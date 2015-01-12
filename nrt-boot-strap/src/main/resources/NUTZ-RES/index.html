@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+#parse('/includes/meta.html')
+#parse('/includes/styles.html')
+#bundle
+<title>#text('title')</title>
+</head>
+<body>
+#parse('/includes/header.html')
+#parse('/includes/header-menu.html')
+#parse('/includes/sidebar-menu.html')
+
+<!--main-container-part-->
+<div id="content">
+<!--breadcrumbs-->
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
+  </div>
+<!--End-breadcrumbs-->
+  <div class="container-fluid">
+  </div>
+</div>
+
+
+#parse('/includes/footer.html')
+#parse('/includes/scripts.html')
+</body>
+</html>
