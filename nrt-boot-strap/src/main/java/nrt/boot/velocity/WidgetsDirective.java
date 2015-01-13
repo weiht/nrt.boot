@@ -3,9 +3,10 @@ package nrt.boot.velocity;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import nrt.jetty.web.VelocityView;
 
@@ -28,7 +29,7 @@ extends Directive {
 	public static final String KEY_WIDGETS = "widgets";
 	private static final String PATH_PREFIX = "widgets";
 	
-	private HashMap<String, Set<String>> widgetLists = new HashMap<String, Set<String>>();
+	private HashMap<String, List<String>> widgetLists = new HashMap<String, List<String>>();
 	private VelocityView viewConfig;
 	
 	@Override
@@ -57,7 +58,7 @@ extends Directive {
 	}
 
 	private void doRender(InternalContextAdapter context, Writer writer,
-			Node node, Set<String> widgets)
+			Node node, List<String> widgets)
 					throws MethodInvocationException, ParseErrorException,
 					ResourceNotFoundException, IOException {
 		logger.trace("Widgets: {}", widgets);
@@ -75,7 +76,7 @@ extends Directive {
 		}
 	}
 
-	private Set<String> widgetList(InternalContextAdapter context, String key) {
+	private List<String> widgetList(InternalContextAdapter context, String key) {
 		File[] repos = (File[]) context.get(VelocityView.KEY_REPO_DIRS);
 		logger.trace("Repos for resources: {}", (Object)repos);
 		if (repos == null || repos.length < 1) {
@@ -85,16 +86,17 @@ extends Directive {
 		}
 	}
 
-	private Set<String> classpathWidgetList(InternalContextAdapter context,
+	private List<String> classpathWidgetList(InternalContextAdapter context,
 			String key) {
 		boolean devMode = viewConfig.isDevMode();
-		Set<String> loaded = null;
+		List<String> loaded = null;
 		if (!devMode) {
 			loaded = widgetLists.get(key); 
 		}
 		if (loaded == null) {
-			loaded = new HashSet<String>();
+			loaded = new ArrayList<String>();
 			loadClasspathWidgets(loaded, key);
+			Collections.sort(loaded);
 		}
 		if (!devMode) {
 			widgetLists.put(key, loaded);
@@ -102,7 +104,7 @@ extends Directive {
 		return loaded;
 	}
 
-	private void loadClasspathWidgets(Set<String> loaded, String key) {
+	private void loadClasspathWidgets(List<String> loaded, String key) {
 		logger.trace("Loading classpath widgets...");
 		String prefix = PATH_PREFIX + (key == null || key.isEmpty() ? "" : ("/" + key));
 		for (NutResource res: Scans.me().scan(prefix)) {
@@ -112,17 +114,18 @@ extends Directive {
 		}
 	}
 
-	private Set<String> mixedWidgetList(InternalContextAdapter context,
+	private List<String> mixedWidgetList(InternalContextAdapter context,
 			String key, File[] repos) {
 		boolean devMode = viewConfig.isDevMode();
-		Set<String> loaded = null;
+		List<String> loaded = null;
 		if (!devMode) {
 			loaded = widgetLists.get(key); 
 		}
 		if (loaded == null) {
-			loaded = new HashSet<String>();
+			loaded = new ArrayList<String>();
 			loadRepoWidgets(loaded, key, repos);
 			loadClasspathWidgets(loaded, key);
+			Collections.sort(loaded);
 		}
 		if (!devMode) {
 			widgetLists.put(key, loaded);
@@ -130,7 +133,7 @@ extends Directive {
 		return loaded;
 	}
 
-	private void loadRepoWidgets(Set<String> loaded, String key, File[] repos) {
+	private void loadRepoWidgets(List<String> loaded, String key, File[] repos) {
 		logger.trace("Loading repository widgets...");
 		for (File f: repos) {
 			File d = new File(f, PATH_PREFIX);
