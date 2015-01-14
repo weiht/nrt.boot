@@ -31,6 +31,9 @@ extends Directive {
 	
 	private HashMap<String, List<String>> widgetLists = new HashMap<String, List<String>>();
 	private VelocityView viewConfig;
+	private static final String[] widgetExtensions = {
+		".html", ".vm", ".htm", ".widget"
+	};
 	
 	@Override
 	public String getName() {
@@ -109,8 +112,10 @@ extends Directive {
 		String prefix = PATH_PREFIX + (key == null || key.isEmpty() ? "" : ("/" + key));
 		for (NutResource res: Scans.me().scan(prefix)) {
 			String n = res.getName();
-			logger.trace("Classpath widget: /{}/{}/{}", PATH_PREFIX, key, n);
-			loaded.add("/" + prefix + "/" + n);
+			if (isWidget(n)) {
+				logger.trace("Classpath widget: /{}/{}/{}", PATH_PREFIX, key, n);
+				loaded.add("/" + prefix + "/" + n);
+			}
 		}
 	}
 
@@ -144,12 +149,21 @@ extends Directive {
 				for (File w: d.listFiles()) {
 					if (w.isFile()) {
 						String n = w.getName();
-						logger.trace("Repo widget: /{}/{}/{}", PATH_PREFIX, key, n);
-						loaded.add("/" + PATH_PREFIX + "/" + key + "/" + ((d == f) ? (d.getName() + "/") : "") + n);
+						if (isWidget(n)) {
+							logger.trace("Repo widget: /{}/{}/{}", PATH_PREFIX, key, n);
+							loaded.add("/" + PATH_PREFIX + "/" + key + "/" + ((d == f) ? (d.getName() + "/") : "") + n);
+						}
 					}
 				}
 			}
 		}
+	}
+
+	private boolean isWidget(String n) {
+		for (String ext: widgetExtensions) {
+			if (n.endsWith(ext)) return true;
+		}
+		return false;
 	}
 
 	private String getWidgetListKey(InternalContextAdapter context, Node node) {
