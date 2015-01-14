@@ -9,4 +9,11 @@
 #end
   </ul>
 </div>
+<div id="search">
+  #widgets ('auth')
+    #foreach ($w in $widgets)
+      #parse($w)
+    #end
+  #end
+</div>
 <!--close-top-Header-menu-->

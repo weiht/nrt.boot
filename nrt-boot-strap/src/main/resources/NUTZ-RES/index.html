@@ -19,6 +19,13 @@
   </div>
 <!--End-breadcrumbs-->
   <div class="container-fluid">
+    <div class="row-fluid">
+#widgets('dashboard')
+  #foreach ($w in $widgets)
+    #parse($w)
+  #end
+#end
+    </div>
   </div>
 </div>
 
