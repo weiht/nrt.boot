@@ -53,14 +53,13 @@ extends Directive {
 		String key = getWidgetListKey(context, node);
 		logger.trace("Loading widgets for list [{}]...", key);
 		if (key == null || key.isEmpty()) {
-			doRender(context, writer, node, widgetList(context, ""));
+			return doRender(context, writer, node, widgetList(context, ""));
 		} else {
-			doRender(context, writer, node, widgetList(context, key));
+			return doRender(context, writer, node, widgetList(context, key));
 		}
-		return false;
 	}
 
-	private void doRender(InternalContextAdapter context, Writer writer,
+	private boolean doRender(InternalContextAdapter context, Writer writer,
 			Node node, List<String> widgets)
 					throws MethodInvocationException, ParseErrorException,
 					ResourceNotFoundException, IOException {
@@ -69,7 +68,7 @@ extends Directive {
 		context.put(KEY_WIDGETS, widgets);
 		try {
 			SimpleNode block = (SimpleNode) node.jjtGetChild(node.jjtGetNumChildren() - 1);
-			block.render(context, writer);
+			return block.render(context, writer);
 		} finally {
 			if (oldWidgets == null) {
 				context.remove(KEY_WIDGETS);
