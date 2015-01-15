@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import nrt.jetty.web.VelocityView;
+import nrt.jetty.web.VelocityConfig;
 
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -30,7 +30,7 @@ extends Directive {
 	private static final String PATH_PREFIX = "widgets";
 	
 	private HashMap<String, List<String>> widgetLists = new HashMap<String, List<String>>();
-	private VelocityView viewConfig;
+	private VelocityConfig viewConfig;
 	private static final String[] widgetExtensions = {
 		".html", ".vm", ".htm", ".widget"
 	};
@@ -49,7 +49,7 @@ extends Directive {
 	public boolean render(InternalContextAdapter context, Writer writer,
 			Node node) throws IOException, ResourceNotFoundException,
 			ParseErrorException, MethodInvocationException {
-		viewConfig = (VelocityView) context.get(VelocityView.KEY_VIEW_CONFIG);
+		viewConfig = (VelocityConfig) context.get(VelocityConfig.KEY_VIEW_CONFIG);
 		String key = getWidgetListKey(context, node);
 		logger.trace("Loading widgets for list [{}]...", key);
 		if (key == null || key.isEmpty()) {
@@ -79,7 +79,7 @@ extends Directive {
 	}
 
 	private List<String> widgetList(InternalContextAdapter context, String key) {
-		File[] repos = (File[]) context.get(VelocityView.KEY_REPO_DIRS);
+		File[] repos = (File[]) context.get(VelocityConfig.KEY_REPO_DIRS);
 		logger.trace("Repos for resources: {}", (Object)repos);
 		if (repos == null || repos.length < 1) {
 			return classpathWidgetList(context, key);
