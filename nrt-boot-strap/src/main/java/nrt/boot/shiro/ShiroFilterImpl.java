@@ -2,6 +2,7 @@ package nrt.boot.shiro;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.Filter;
 
@@ -17,6 +18,7 @@ import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
 import org.apache.shiro.web.filter.mgt.FilterChainManager;
 import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
+import org.nutz.lang.Mirror;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ public class ShiroFilterImpl extends AbstractShiroFilter {
 	private List<String> chainDefinitions;
 	private String loginUrl, successUrl, unauthorizedUrl;
 	private Map<String, Filter> filters;
+	private Map<String, Map<String, Object>> defaultFilterConfigs;
 	
 	@Override
 	public void init() throws Exception {
@@ -108,6 +111,8 @@ public class ShiroFilterImpl extends AbstractShiroFilter {
                 manager.addFilter(name, filter, false);
             }
         }
+        
+        reconfigDefaultFilters(manager);
 
         //build up the chains:
         Map<String, String> chains = toChains(getChainDefinitions());
@@ -120,6 +125,27 @@ public class ShiroFilterImpl extends AbstractShiroFilter {
         }
 
         return manager;
+	}
+
+	private void reconfigDefaultFilters(DefaultFilterChainManager manager) {
+		for (Entry<String, Map<String, Object>> conf: defaultFilterConfigs.entrySet()) {
+			String n = conf.getKey();
+			Filter f = manager.getFilter(n);
+			if (f != null) {
+				reconfigFilter(f, conf.getValue());
+			}
+		}
+	}
+
+	private void reconfigFilter(Filter f, Map<String, Object> conf) {
+		Mirror<? extends Filter> m = Mirror.me(f.getClass());
+		for (Entry<String, Object> c: conf.entrySet()) {
+			try {
+				m.setValue(f, c.getKey(), c.getValue());
+			} catch (Exception e) {
+				logger.warn("", e);
+			}
+		}
 	}
 
 	private Map<String, String> toChains(List<String> chainDefs) {
@@ -185,5 +211,9 @@ public class ShiroFilterImpl extends AbstractShiroFilter {
 
 	public void setFilters(Map<String, Filter> filters) {
 		this.filters = filters;
+	}
+
+	public void setDefaultFilterConfigs(Map<String, Map<String, Object>> defaultFilterConfigs) {
+		this.defaultFilterConfigs = defaultFilterConfigs;
 	}
 }
