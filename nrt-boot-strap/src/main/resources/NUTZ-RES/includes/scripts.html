@@ -2,15 +2,9 @@
 <script src="${contextPath}/s/matrix/js/jquery.min.js"></script> 
 <script src="${contextPath}/s/matrix/js/jquery.ui.custom.js"></script> 
 <script src="${contextPath}/s/matrix/js/bootstrap.min.js"></script> 
-<script src="${contextPath}/s/matrix/js/jquery.flot.min.js"></script> 
-<script src="${contextPath}/s/matrix/js/jquery.flot.resize.min.js"></script> 
-<script src="${contextPath}/s/matrix/js/jquery.peity.min.js"></script> 
 <script src="${contextPath}/s/matrix/js/fullcalendar.min.js"></script> 
 <script src="${contextPath}/s/matrix/js/matrix.js"></script> 
-<script src="${contextPath}/s/matrix/js/matrix.dashboard.js"></script> 
 <script src="${contextPath}/s/matrix/js/jquery.gritter.min.js"></script> 
-<script src="${contextPath}/s/matrix/js/matrix.interface.js"></script> 
-<script src="${contextPath}/s/matrix/js/matrix.chat.js"></script> 
 <script src="${contextPath}/s/matrix/js/jquery.validate.js"></script> 
 <script src="${contextPath}/s/matrix/js/matrix.form_validation.js"></script> 
 <script src="${contextPath}/s/matrix/js/jquery.wizard.js"></script> 
@@ -43,4 +37,14 @@
 function resetMenu() {
    document.gomenu.selector.selectedIndex = 2;
 }
+  
+$(function() {
+	var uri = '$!{contextPath}$!{request.requestURI}', url = '$!{request.requestURL}';
+	$('.menu-item').each(function(ix) {
+		var href = $(this).children('a').attr('href');
+		if (href == uri || href == url) {
+			$(this).addClass('active');
+		}
+	});
+});
 </script>
