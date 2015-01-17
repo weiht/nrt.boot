@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nrt.jetty.web.VelocityConfig;
 
@@ -52,10 +55,15 @@ extends Directive {
 		viewConfig = (VelocityConfig) context.get(VelocityConfig.KEY_VIEW_CONFIG);
 		String key = getWidgetListKey(context, node);
 		logger.trace("Loading widgets for list [{}]...", key);
-		if (key == null || key.isEmpty()) {
-			return doRender(context, writer, node, widgetList(context, ""));
-		} else {
-			return doRender(context, writer, node, widgetList(context, key));
+		try {
+			if (key == null || key.isEmpty()) {
+				return doRender(context, writer, node, widgetList(context, ""));
+			} else {
+				return doRender(context, writer, node, widgetList(context, key));
+			}
+		} catch (Exception e) {
+			logger.warn("", e);
+			return false;
 		}
 	}
 
@@ -96,8 +104,9 @@ extends Directive {
 			loaded = widgetLists.get(key); 
 		}
 		if (loaded == null) {
-			loaded = new ArrayList<String>();
-			loadClasspathWidgets(loaded, key);
+			Set<String> dedup = new HashSet<String>();
+			loadClasspathWidgets(dedup, key);
+			loaded = new ArrayList<String>(dedup);
 			Collections.sort(loaded);
 		}
 		if (!devMode) {
@@ -106,7 +115,7 @@ extends Directive {
 		return loaded;
 	}
 
-	private void loadClasspathWidgets(List<String> loaded, String key) {
+	private void loadClasspathWidgets(Collection<String> loaded, String key) {
 		logger.trace("Loading classpath widgets...");
 		String prefix = PATH_PREFIX + (key == null || key.isEmpty() ? "" : ("/" + key));
 		for (NutResource res: Scans.me().scan(viewConfig.getResourceLocation() + "/" + prefix)) {
@@ -126,9 +135,10 @@ extends Directive {
 			loaded = widgetLists.get(key); 
 		}
 		if (loaded == null) {
-			loaded = new ArrayList<String>();
-			loadRepoWidgets(loaded, key, repos);
-			loadClasspathWidgets(loaded, key);
+			Set<String> dedup = new HashSet<String>();
+			loadRepoWidgets(dedup, key, repos);
+			loadClasspathWidgets(dedup, key);
+			loaded = new ArrayList<String>(dedup);
 			Collections.sort(loaded);
 		}
 		if (!devMode) {
@@ -137,7 +147,7 @@ extends Directive {
 		return loaded;
 	}
 
-	private void loadRepoWidgets(List<String> loaded, String key, File[] repos) {
+	private void loadRepoWidgets(Collection<String> loaded, String key, File[] repos) {
 		logger.trace("Loading repository widgets...");
 		for (File f: repos) {
 			File d = new File(f, PATH_PREFIX);
