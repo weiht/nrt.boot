@@ -109,7 +109,7 @@ extends Directive {
 	private void loadClasspathWidgets(List<String> loaded, String key) {
 		logger.trace("Loading classpath widgets...");
 		String prefix = PATH_PREFIX + (key == null || key.isEmpty() ? "" : ("/" + key));
-		for (NutResource res: Scans.me().scan(prefix)) {
+		for (NutResource res: Scans.me().scan(viewConfig.getResourceLocation() + "/" + prefix)) {
 			String n = res.getName();
 			if (isWidget(n)) {
 				logger.trace("Classpath widget: /{}/{}/{}", PATH_PREFIX, key, n);
