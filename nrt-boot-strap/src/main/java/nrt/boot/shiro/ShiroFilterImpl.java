@@ -128,6 +128,7 @@ public class ShiroFilterImpl extends AbstractShiroFilter {
 	}
 
 	private void reconfigDefaultFilters(DefaultFilterChainManager manager) {
+		if (defaultFilterConfigs == null || defaultFilterConfigs.isEmpty()) return;
 		for (Entry<String, Map<String, Object>> conf: defaultFilterConfigs.entrySet()) {
 			String n = conf.getKey();
 			Filter f = manager.getFilter(n);
