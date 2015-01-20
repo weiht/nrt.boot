@@ -1,0 +1,14 @@
+.async-include .loading {
+	border: 1px dashed violet;
+	padding: 12px;
+}
+
+.async-include .loading img {
+	border: none;
+}
+
+.async-include .loading:first-child img {
+	border: none;
+	height: 32px;
+	width: 32px;
+}
