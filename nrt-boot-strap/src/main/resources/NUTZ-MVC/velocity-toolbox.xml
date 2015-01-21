@@ -1,0 +1,5 @@
+<tools>
+	<toolbox scope="application">
+		<tool class="nrt.boot.velocity.ShiroTool"/>
+	</toolbox>
+</tools>
