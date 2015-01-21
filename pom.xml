@@ -24,5 +24,6 @@
 	<modules>
 		<module>nrt-boot-static</module>
 		<module>nrt-boot-strap</module>
+		<module>nrt-boot-org</module>
 	</modules>
 </project>
