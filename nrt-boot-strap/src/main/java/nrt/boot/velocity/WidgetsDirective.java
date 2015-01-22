@@ -114,6 +114,21 @@ extends Directive {
 		}
 		return loaded;
 	}
+	
+	private String combinePath(String... parts) {
+		StringBuilder buff = new StringBuilder();
+		for (String p: parts) {
+			if (!p.startsWith("/")) {
+				buff.append("/");
+			}
+			buff.append(p);
+			int last = buff.length() - 1;
+			if (buff.charAt(last) == '/') {
+				buff.deleteCharAt(last);
+			}
+		}
+		return buff.toString();
+	}
 
 	private void loadClasspathWidgets(Collection<String> loaded, String key) {
 		logger.trace("Loading classpath widgets...");
@@ -122,7 +137,7 @@ extends Directive {
 			String n = res.getName();
 			if (isWidget(n)) {
 				logger.trace("Classpath widget: /{}/{}/{}", PATH_PREFIX, key, n);
-				loaded.add("/" + prefix + "/" + n);
+				loaded.add(combinePath(prefix, n));
 			}
 		}
 	}
