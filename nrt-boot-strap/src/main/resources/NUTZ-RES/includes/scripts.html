@@ -40,7 +40,7 @@ function resetMenu() {
 }
   
 $(function() {
-	var uri = '$!{contextPath}$!{request.requestURI}', url = '$!{request.requestURL}';
+	var uri = '$!{request.requestURI}', url = '$!{request.requestURL}';
 	$('.menu-item').each(function(ix) {
 		var href = $(this).children('a').attr('href');
 		if (href == uri || href == url) {
